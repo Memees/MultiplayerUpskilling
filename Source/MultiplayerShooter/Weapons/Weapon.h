@@ -24,7 +24,12 @@ class MULTIPLAYERSHOOTER_API AWeapon : public AActor
 public:
 	AWeapon();
 
+	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
+
 	void ShowPickupWidget(bool bShowWidget);
+
+	void SetWeaponState(EWeaponState NewWeaponState);
+	FORCEINLINE class USphereComponent* GetAreaSphere() const { return AreaSphere; }
 protected:
 	virtual void BeginPlay() override;
 
@@ -55,7 +60,10 @@ private:
 	UPROPERTY(VisibleAnyWhere, Category = "Weapon Properties");
 	class UWidgetComponent* PickupWidget;
 
-	UPROPERTY(VisibleAnyWhere);
+	UFUNCTION()
+	void OnRep_WeaponState();
+
+	UPROPERTY(ReplicatedUsing = OnRep_WeaponState, VisibleAnyWhere, Category = "Weapon Properties");
 	EWeaponState WeaponState;
 
 };
