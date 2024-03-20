@@ -27,6 +27,8 @@ ABlasterCharacter::ABlasterCharacter()
 
 	Combat = CreateDefaultSubobject <UCombatComponent>(TEXT("CombatComponent"));
 	Combat->SetIsReplicated(true);
+
+	GetCharacterMovement()->NavAgentProps.bCanCrouch = true;
 }
 
 // Called when the game starts or when spawned
@@ -48,6 +50,10 @@ void ABlasterCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCo
 	PlayerInputComponent->BindAxis(TEXT("LookUp"), this, &ThisClass::LookUp);
 
 	PlayerInputComponent->BindAction(TEXT("Equip"), IE_Pressed, this, &ThisClass::EquipButtonPressed);
+	PlayerInputComponent->BindAction(TEXT("Crouch"), IE_Pressed, this, &ThisClass::CrouchButtonPressed);
+
+	PlayerInputComponent->BindAction(TEXT("Aim"), IE_Pressed, this, &ThisClass::AimButtonPressed);
+	PlayerInputComponent->BindAction(TEXT("Aim"), IE_Released, this, &ThisClass::AimButtonReleased);
 
 	bUseControllerRotationYaw = false;
 	GetCharacterMovement()->bOrientRotationToMovement = true;
@@ -83,6 +89,16 @@ void ABlasterCharacter::SetOverlappingWeapon(class AWeapon* Weapon)
 			OverlappingWeapon->ShowPickupWidget(true);
 		}
 	}
+}
+
+bool ABlasterCharacter::IsWeaponEquipped() const
+{
+	return Combat && Combat->EquippedWeapon;
+}
+
+bool ABlasterCharacter::IsAiming() const
+{
+	return Combat && Combat->bAiming;
 }
 
 void ABlasterCharacter::MoveForward(float Value)
@@ -132,6 +148,26 @@ void ABlasterCharacter::SeverEquipButtonPressed_Implementation()
 	{
 		Combat->EquipWeapon(OverlappingWeapon);
 	}
+}
+
+void ABlasterCharacter::CrouchButtonPressed()
+{
+	if(bIsCrouched)
+		UnCrouch();
+	else
+		Crouch();
+}
+
+void ABlasterCharacter::AimButtonPressed()
+{
+	if(Combat)
+		Combat->SetAiming(true);
+}
+
+void ABlasterCharacter::AimButtonReleased()
+{
+	if (Combat)
+		Combat->SetAiming(false);
 }
 
 void ABlasterCharacter::OnRep_OverlappingWeapon(AWeapon* LastWeapon)

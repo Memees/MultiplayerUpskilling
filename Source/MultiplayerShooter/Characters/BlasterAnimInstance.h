@@ -29,4 +29,13 @@ class MULTIPLAYERSHOOTER_API UBlasterAnimInstance : public UAnimInstance
 
 	UPROPERTY(BlueprintReadOnly, Category = Character, meta = (AllowPrivateAccess = "true"))
 	bool bIsAccelerating;
+
+	UPROPERTY(BlueprintReadOnly, Category = Character, meta = (AllowPrivateAccess = "true"))
+	bool bWeaponEquipped;
+
+	UPROPERTY(BlueprintReadOnly, Category = Character, meta = (AllowPrivateAccess = "true"))
+	bool bIsCrouched;
+
+	UPROPERTY(BlueprintReadOnly, Category = Character, meta = (AllowPrivateAccess = "true"))
+	bool bIsAiming;
 };

@@ -21,6 +21,8 @@ public:
 	virtual void PostInitializeComponents() override;
 
 	void SetOverlappingWeapon(class AWeapon* Weapon);
+	bool IsWeaponEquipped() const;
+	bool IsAiming() const;
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
@@ -30,6 +32,9 @@ protected:
 	void Turn(float Value);
 	void LookUp(float Value);
 	void EquipButtonPressed();
+	void CrouchButtonPressed();
+	void AimButtonPressed();
+	void AimButtonReleased();
 private:
 	UFUNCTION(Server, Reliable)
 	void SeverEquipButtonPressed();
